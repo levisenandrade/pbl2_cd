@@ -1,0 +1,29 @@
+module contador (
+    input clk,
+    input reset,
+    input sensor,
+    output reg [4:0] contagem,
+    output wire trava_ativa
+);
+    reg sensor_sync;
+    reg sensor_anterior;
+
+    assign trava_ativa = (contagem >= 5'd10101);
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            contagem <= 5'b00000;
+            sensor_sync <= 1'b0;
+            sensor_anterior <= 1'b0;
+        end else begin
+
+            sensor_sync <= sensor;
+            sensor_anterior <= sensor_sync;
+
+            if (sensor_sync && !sensor_anterior && !trava_ativa) begin
+                contagem <= contagem + 1;
+            end
+        end
+    end
+
+endmodule
