@@ -4,3 +4,50 @@ module contador (
     input pulse,
     output [4:0] q
 );
+
+wire [4:0] q;      // Estado atual
+wire [4:0] d;      // Próximo estado
+wire [3:0] carry;  // Propagação do incremento
+wire en_final;     // Incremento autorizado
+wire trava;        // Detecta o valor 20
+
+// logica de travamento (detecta 21: 10101 em binário)
+wire n_q3, n_q1, n_q0;
+not (n_q3, q[3]);
+not (n_q1, q[1]);
+not (n_q0, q[0]);
+// Trava = Q4 AND !Q3 AND Q2 AND !Q1 AND !Q0 AB'CD'E
+and (trava, q[4], n_q3, q[2], n_q1, n_q0);
+
+// só incrementa se houver pulso E não estiver travado
+wire n_trava;
+not (n_trava, trava);
+and (en_final, pulse, n_trava);
+
+// bits do contador
+// Bit 0 (LSB)
+xor (d[0], q[0], en_final);
+flipflop ff0 (.clk(clk), .reset(reset), .d(d[0]), .q(q[0]));
+
+// Bit 1
+and (carry[0], q[0], en_final);
+xor (d[1], q[1], carry[0]);
+flipflop ff1 (.clk(clk), .reset(reset), .d(d[1]), .q(q[1]));
+
+// Bit 2
+and (carry[1], q[1], carry[0]);
+xor (d[2], q[2], carry[1]);
+flipflop ff2 (.clk(clk), .reset(reset), .d(d[2]), .q(q[2]));
+
+// Bit 3
+and (carry[2], q[2], carry[1]);
+xor (d[3], q[3], carry[2]);
+flipflop ff3 (.clk(clk), .reset(reset), .d(d[3]), .q(q[3]));
+
+// Bit 4 (MSB)
+and (carry[3], q[3], carry[2]);
+xor (d[4], q[4], carry[3]);
+flipflop ff4 (.clk(clk), .reset(reset), .d(d[4]), .q(q[4]));
+
+// precisaremos colocar uma porta or com os contadores de cada sensor
+// tipo: or verifica_travamento (travar_sistema, trava_F, trava_T, trava_P, trava_L); nesse caso a saída sera travar_sistema em 0 ou 1
