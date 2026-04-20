@@ -1,0 +1,6 @@
+module contador (
+    input clk,
+    input reset,
+    input pulse,
+    output [4:0] q
+);
