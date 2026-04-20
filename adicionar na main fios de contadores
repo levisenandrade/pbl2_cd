@@ -4,13 +4,13 @@ wire [3:0] travas;
 wire sistema_travado = |travas; // OR em todos os bits do vetor [travas] resultando numa saída
 
 // fumaça
-Contador_Evento CF (.clk(clkDiv), .reset(reset_global), .sensor(A), .contagem(contF), .trava_ativa(travas[3]));
+Contador_Evento CF (.clk(clkDiv), .reset(reset_global), .sensor(F), .contagem(contF), .trava_ativa(travas[3]));
 
 // tempreatura
-Contador_Evento CT (.clk(clkDiv), .reset(reset_global), .sensor(B), .contagem(contT), .trava_ativa(travas[2]));
+Contador_Evento CT (.clk(clkDiv), .reset(reset_global), .sensor(T), .contagem(contT), .trava_ativa(travas[2]));
 
-// presença
-Contador_Evento CP (.clk(clkDiv), .reset(reset_global), .sensor(C), .contagem(contP), .trava_ativa(travas[1]));
+// presença (negado P)
+Contador_Evento CP (.clk(clkDiv), .reset(reset_global), .sensor(~P), .contagem(contP), .trava_ativa(travas[1]));
 
-// luz
-Contador_Evento CL (.clk(clkDiv), .reset(reset_global), .sensor(D), .contagem(contL), .trava_ativa(travas[0]));
+// luz (nbegado L)
+Contador_Evento CL (.clk(clkDiv), .reset(reset_global), .sensor(~L), .contagem(contL), .trava_ativa(travas[0]));
