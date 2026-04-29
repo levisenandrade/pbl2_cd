@@ -1,12 +1,12 @@
-module Cont2Bits(q, rst, Inp);
-	input Inp;
+module Cont2Bits(q, rst, Clk);
+	input Clk;
 	input rst;
 	output [1:0] q;
 	
 	wire [1:0]qn;
 
 	FlipFlopJK FF0 (
-	.clk(Inp),
+	.clk(Clk),
 	.rst(rst),
 	.j(1'b1),
 	.k(1'b1),

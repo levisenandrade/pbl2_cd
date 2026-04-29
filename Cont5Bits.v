@@ -1,9 +1,10 @@
-module Cont5Bits(q, Inp, rst);
+module Cont5Bits(q, Trava, Inp, rst);
 	input Inp;
 	input rst;
 	output [4:0] q;
+	output Trava;
 	
-	wire Trava, Entrada;
+	wire Entrada;
 	wire [4:0]qn;
 	
 	and(Entrada, Inp, Trava);
@@ -51,6 +52,6 @@ module Cont5Bits(q, Inp, rst);
 	.qbar(qn[4]));
 	
 	
-	or(Trava, qn[0], qn[2], qn[4], q[1], q[3]);
+	and(Trava, q[0], qn[1], q[2], qn[3], q[4]);
 
 endmodule
