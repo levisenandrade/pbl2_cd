@@ -1,0 +1,32 @@
+module codificador_letras (
+    input wire [1:0] sel,
+    output wire [6:0] segmento 
+);
+
+    // inveresores
+    wire An, Bn;
+    not (An, sel[1]); // A'
+    not (Bn, sel[0]); // B'
+
+    // Segmento a
+    or (segmento[0], sel[0], sel[0]);
+
+    // Segmento b
+    or (segmento[1], An, sel[0]);
+
+    // Segmento c
+    or (segmento[2], sel[1], An);
+
+    // Segmento d
+    or (segmento[3], Bn, Bn);
+
+    // Segmento e
+    and (segmento[4], sel[1], An);
+
+    // Segmento f
+    and (segmento[5], sel[0], Bn);
+
+    // Segmento g
+    and (segmento[6], sel[1], sel[0]);
+
+endmodule
