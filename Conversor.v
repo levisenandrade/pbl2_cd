@@ -19,7 +19,7 @@ module Conversor(Dez, Uni, Q);
 	and(T[0], Q[4], Qn[2]);
 	and(T[2], T[1], Q[3]);
 	or(T[1], Q[2], Q[1]);
-	or(Dez[0], T[1], T[2]);
+	or(Dez[0], T[2], T[0]);
 	
 	// Unidades
 	

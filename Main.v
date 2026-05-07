@@ -1,13 +1,13 @@
 module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 
 	input F, T, P, L, Slc0, Slc1, reset, CLK;
-	output [2:0]a;
-	output [2:0]b;
-	output [2:0]c;
-	output [2:0]d;
-	output [2:0]e;
-	output [2:0]f;
-	output [2:0]g;
+	output [3:0]a;
+	output [3:0]b;
+	output [3:0]c;
+	output [3:0]d;
+	output [3:0]e;
+	output [3:0]f;
+	output [3:0]g;
 	output [7:0]S;	
 	
 	wire [3:0]N;
@@ -30,12 +30,12 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	
 	not(rst, reset);
 	
-	Logic L0(.S(N), .A(F), .B(T), .C(P), .D(L));
+	Logic L0(.S(N), .A(InF), .B(InT), .C(InP), .D(InL));
 	
 	Mux4inp4bits Mux0(
 	.S(M), 
 	.A({1'b0, N[3], N[2], N[1], N[0]}), 
-	.B({1'b1, F, T, P, L}), 
+	.B({1'b1, InF, InT, InP, InL}), 
 	.C(4'b01001), 
 	.D(4'b01000), 
 	.Slc0(Slc0), 
@@ -55,35 +55,57 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	Mux4inp8bits Mux1(
 	.S(S), 
 	.A({1'b0, Prg, Inv, Alt, 1'b0, 1'b0, 1'b0, 1'b0}), 
-	.B({1'b0, 1'b0, 1'b0, 1'b0, F, T, P, L}), 
+	.B({1'b0, 1'b0, 1'b0, 1'b0, InF, InT, InP, InL}), 
 	.C(8'b10000000), 
 	.D(8'b01000000), 
 	.Slc0(Slc0), 
 	.Slc1(Slc1));
 	
+	// Problema 2
+	
 	Cont5Bits ContF(
 	.q(CF), 
-	.Trava(Trv[3]), 
 	.Inp(InpF), 
 	.rst(rst));
+	
+	wire [1:0]nCF;
+	not(nCF[0], CF[1]);
+	not(nCF[1], CF[3]);
+	
+	and(Trv[0], CF[0], nCF[0], CF[2], nCF[1], CF[4]);
     
 	 Cont5Bits ContT(
 	.q(CT), 
-	.Trava(Trv[2]), 
 	.Inp(InpT), 
 	.rst(rst));
 	
+	wire [1:0]nCT;
+	not(nCT[0], CT[1]);
+	not(nCT[1], CT[3]);
+	
+	and(Trv[1], CT[0], nCT[0], CT[2], nCT[1], CT[4]);
+	
 	Cont5Bits ContP(
 	.q(CP), 
-	.Trava(Trv[1]), 
 	.Inp(InpP), 
 	.rst(rst));
 	
+	wire [1:0]nCP;
+	not(nCP[0], CP[1]);
+	not(nCP[1], CP[3]);
+	
+	and(Trv[2], CP[0], nCP[0], CP[2], nCP[1], CP[4]);
+	
 	Cont5Bits ContL(
 	.q(CL), 
-	.Trava(Trv[0]), 
 	.Inp(InpL), 
 	.rst(rst));
+	
+	wire [1:0]nCL;
+	not(nCL[0], CL[1]);
+	not(nCL[1], CL[3]);
+	
+	and(Trv[3], CL[0], nCL[0], CL[2], nCL[1], CL[4]);
 	 
 	 DivFreq Freq(
 	 .Q(Clock), 
@@ -94,17 +116,19 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	 .rst(rst),
 	 .Clk(Clock));
 	 
-	 Mux1Sel Seletor0(
+	 Mux1Sel MXSeletor0(
 	 .S(Seletor[1]),
 	 .InpA(Tmr[1]),
 	 .InpB(PriSlc[1]), //Aqui e a saida do codificador das travas!!!!!
 	 .Slc(TravaGeral)); //Aqui e se travou ou nao
 	 
-	 Mux1Sel Seletor1(
+	 Mux1Sel MXSeletor1(
 	 .S(Seletor[0]),
 	 .InpA(Tmr[0]),
 	 .InpB(PriSlc[0]), //Aqui e a saida do codificador das travas!!!!!
 	 .Slc(TravaGeral)); //Aqui e se travou ou nao
+	 
+	 codificador_letras codwarzone(.sel({Seletor[1], Seletor[0]}), .segmento({g[3], f[3], e[3], d[3], c[3], b[3], a[3]}));
 	 
 	 TrvPSel Travas(
 	 .Slc(PriSlc), 
@@ -132,34 +156,43 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	 not(NTrvGeral, TravaGeral);
 	 
 	 Debouncer DB0(
-	 .FiltInp(FF), 
-	 .Inp(F),
-	 .Clk(CLK),
+	 .Pulso(FF), 
+	 .Inp(F), 
+	 .Clk(CLK), 
 	 .rst(rst));
 
 	 Debouncer DB1(
-	 .FiltInp(FT), 
-	 .Inp(T),
-	 .Clk(CLK),
+	 .Pulso(FT), 
+	 .Inp(T), 
+	 .Clk(CLK), 
 	 .rst(rst));
 	 
-	 Debouncer DB2(
-	 .FiltInp(FP), 
-	 .Inp(P),
-	 .Clk(CLK),
+	 NegDebouncer DB2(
+	 .Pulso(FP), 
+	 .Inp(nFP), 
+	 .Clk(CLK), 
 	 .rst(rst));
 	 
-	 Debouncer DB3(
-	 .FiltInp(FL), 
-	 .Inp(L),
-	 .Clk(CLK),
+	 not(nFP, P);
+	 not(nFL, L);
+	 
+	 NegDebouncer DB3(
+	 .Pulso(FL), 
+	 .Inp(nFL), 
+	 .Clk(CLK), 
 	 .rst(rst));
 	 
 	 wire FF, FT, FP, FL;
+	 wire InF, InT, InP, InL;
 	 
 	 and(InpF, FF, NTrvGeral);
 	 and(InpT, FT, NTrvGeral);
 	 and(InpP, FP, NTrvGeral);
 	 and(InpL, FL, NTrvGeral);
+	 
+	 and(InF, F, NTrvGeral);
+	 and(InT, T, NTrvGeral);
+	 and(InP, P, NTrvGeral);
+	 and(InL, L, NTrvGeral);
 	 
 endmodule

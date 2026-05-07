@@ -1,57 +1,56 @@
-module Cont5Bits(q, Trava, Inp, rst);
+module Cont5Bits(q, Inp, rst);
 	input Inp;
 	input rst;
 	output [4:0] q;
-	output Trava;
-	
-	wire Entrada;
-	wire [4:0]qn;
-	
-	and(Entrada, Inp, Trava);
 
+	wire [4:0]qn;
+	wire [3:0] T;
+	
+	or(T[0], qn[4], qn[2]);
+	
 	FlipFlopJK FF0 (
-	.clk(Entrada),
+	.clk(Inp),
 	.rst(rst),
 	.j(1'b1),
-	.k(1'b1),
+	.k(T[0]),
 	.q(q[0]),
 	.qbar(qn[0]));
-
-	// FFs subsequentes recebem o clock da saída Q do anterior
-
+	
 	FlipFlopJK FF1 (
-	.clk(qn[0]),
+	.clk(Inp),
 	.rst(rst),
-	.j(1'b1),
-	.k(1'b1),
+	.j(q[0]),
+	.k(q[0]),
 	.q(q[1]),
 	.qbar(qn[1]));
 	
+	and(T[1], q[0], q[1]);
+	
 	FlipFlopJK FF2 (
-	.clk(qn[1]),
+	.clk(Inp),
 	.rst(rst),
-	.j(1'b1),
-	.k(1'b1),
+	.j(T[1]),
+	.k(T[1]),
 	.q(q[2]),
 	.qbar(qn[2]));
 	
+	and(T[2], q[2], T[1]);
+	
 	FlipFlopJK FF3 (
-	.clk(qn[2]),
+	.clk(Inp),
 	.rst(rst),
-	.j(1'b1),
-	.k(1'b1),
+	.j(T[2]),
+	.k(T[2]),
 	.q(q[3]),
 	.qbar(qn[3]));
+
+	and(T[3], q[3], q[2], q[1], q[0]);
 	
 	FlipFlopJK FF4 (
-	.clk(qn[3]),
+	.clk(Inp),
 	.rst(rst),
-	.j(1'b1),
-	.k(1'b1),
+	.j(T[3]),
+	.k(T[3]),
 	.q(q[4]),
 	.qbar(qn[4]));
-	
-	
-	and(Trava, q[0], qn[1], q[2], qn[3], q[4]);
-
 endmodule

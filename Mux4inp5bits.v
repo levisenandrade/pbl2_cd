@@ -1,12 +1,12 @@
 module Mux4inp5bits(S, A, B, C, D, Slc0, Slc1);
-	input [5:0]A;
-	input [5:0]B;
-	input [5:0]C;
-	input [5:0]D;
+	input [4:0]A;
+	input [4:0]B;
+	input [4:0]C;
+	input [4:0]D;
 	
 	input Slc0, Slc1;
 	
-	output [5:0]S;
+	output [4:0]S;
 	
 	Mux4inp bit0 (
 	.S(S[0]), 
@@ -50,15 +50,6 @@ module Mux4inp5bits(S, A, B, C, D, Slc0, Slc1);
 	.B(B[4]), 
 	.C(C[4]), 
 	.D(D[4]), 
-	.Slc0(Slc0), 
-	.Slc1(Slc1));
-	
-	Mux4inp bit5 (
-	.S(S[5]), 
-	.A(A[5]), 
-	.B(B[5]), 
-	.C(C[5]), 
-	.D(D[5]), 
 	.Slc0(Slc0), 
 	.Slc1(Slc1));
 	

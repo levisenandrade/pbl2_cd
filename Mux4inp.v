@@ -9,8 +9,8 @@ module Mux4inp(S, A, B, C, D, Slc0, Slc1);
 	not(nSlc1, Slc1);
 	
 	and(T[0], nSlc0, nSlc1);
-	and(T[1], Slc0, nSlc1);
-	and(T[2], nSlc0, Slc1);
+	and(T[1], nSlc0, Slc1);
+	and(T[2], Slc0, nSlc1);
 	and(T[3], Slc0, Slc1);
 	
 	and(T[4], T[0], A);
