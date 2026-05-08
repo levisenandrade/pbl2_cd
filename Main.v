@@ -128,7 +128,7 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	 .InpB(PriSlc[0]), //Aqui e a saida do codificador das travas!!!!!
 	 .Slc(TravaGeral)); //Aqui e se travou ou nao
 	 
-	 codificador_letras codwarzone(.sel({Seletor[1], Seletor[0]}), .segmento({g[3], f[3], e[3], d[3], c[3], b[3], a[3]}));
+	codificador_letras letras_display (.sel({Seletor[1], Seletor[0]}), .segmento({g[3], f[3], e[3], d[3], c[3], b[3], a[3]})); // display mais à esquerda que alterna entre F, T, P e L
 	 
 	 TrvPSel Travas(
 	 .Slc(PriSlc), 
