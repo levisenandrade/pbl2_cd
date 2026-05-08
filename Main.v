@@ -1,4 +1,4 @@
-module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
+module Main(a, b, c, d, e, f, g, TravaGeral, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 
 	input F, T, P, L, Slc0, Slc1, reset, CLK;
 	output [3:0]a;
@@ -9,10 +9,11 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	output [3:0]f;
 	output [3:0]g;
 	output [7:0]S;	
+	output TravaGeral;
 	
 	wire [3:0]N;
 	wire [4:0]M;
-	wire Alt, Inv, Prg, Clock, TravaGeral;
+	wire Alt, Inv, Prg, Clock;
 	wire [3:0]Trv;
 	wire [4:0] CF;
 	wire [4:0] CT;
@@ -41,7 +42,17 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	.Slc0(Slc0), 
 	.Slc1(Slc1));
 	
-	ConvDispP1 DispProb1(.a(a[0]), .b(b[0]), .c(c[0]), .d(d[0]), .e(e[0]), .f(f[0]), .g(g[0]), .A(M[4]), .B(M[3]), .C(M[2]), .D(M[1]), .E(M[0]));
+	ConvDispP1 DispProb1(.a(aOrg), .b(bOrg), .c(cOrg), .d(dOrg), .e(eOrg), .f(fOrg), .g(gOrg), .A(M[4]), .B(M[3]), .C(M[2]), .D(M[1]), .E(M[0]));
+		
+	wire aOrg, bOrg, cOrg, dOrg, eOrg, fOrg, gOrg;
+		
+	or(a[0], TravaGeral, aOrg);
+	or(b[0], TravaGeral, bOrg);
+	or(c[0], TravaGeral, cOrg);
+	or(d[0], TravaGeral, dOrg);
+	or(e[0], TravaGeral, eOrg);
+	or(f[0], TravaGeral, fOrg);
+	or(g[0], TravaGeral, gOrg);
 	
 	LogicaLEDs Log0(
 	.Alt(Alt), 
@@ -52,14 +63,25 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	.C(M[1]), 
 	.D(M[0]));
 
+	wire [7:0] SOrg;
+	
 	Mux4inp8bits Mux1(
-	.S(S), 
+	.S(SOrg), 
 	.A({1'b0, Prg, Inv, Alt, 1'b0, 1'b0, 1'b0, 1'b0}), 
 	.B({1'b0, 1'b0, 1'b0, 1'b0, InF, InT, InP, InL}), 
 	.C(8'b10000000), 
 	.D(8'b01000000), 
 	.Slc0(Slc0), 
 	.Slc1(Slc1));
+	
+	and(S[0], SOrg[0], NTrvGeral);
+	and(S[1], SOrg[1], NTrvGeral);
+	and(S[2], SOrg[2], NTrvGeral);
+	and(S[3], SOrg[3], NTrvGeral);
+	and(S[4], SOrg[4], NTrvGeral);
+	and(S[5], SOrg[5], NTrvGeral);
+	and(S[6], SOrg[6], NTrvGeral);
+	and(S[7], SOrg[7], NTrvGeral);
 	
 	// Problema 2
 	
@@ -128,7 +150,7 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	 .InpB(PriSlc[0]), //Aqui e a saida do codificador das travas!!!!!
 	 .Slc(TravaGeral)); //Aqui e se travou ou nao
 	 
-	codificador_letras letras_display (.sel({Seletor[1], Seletor[0]}), .segmento({g[3], f[3], e[3], d[3], c[3], b[3], a[3]})); // display mais à esquerda que alterna entre F, T, P e L
+	 codificador_letras codwarzone(.sel({Seletor[1], Seletor[0]}), .segmento({g[3], f[3], e[3], d[3], c[3], b[3], a[3]}));
 	 
 	 TrvPSel Travas(
 	 .Slc(PriSlc), 
@@ -159,19 +181,19 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	 .Pulso(FF), 
 	 .Inp(F), 
 	 .Clk(CLK), 
-	 .rst(rst));
+	 .rst(1'b0));
 
 	 Debouncer DB1(
 	 .Pulso(FT), 
 	 .Inp(T), 
 	 .Clk(CLK), 
-	 .rst(rst));
+	 .rst(1'b0));
 	 
 	 NegDebouncer DB2(
 	 .Pulso(FP), 
 	 .Inp(nFP), 
 	 .Clk(CLK), 
-	 .rst(rst));
+	 .rst(1'b0));
 	 
 	 not(nFP, P);
 	 not(nFL, L);
@@ -180,7 +202,7 @@ module Main(a, b, c, d, e, f, g, S, F, T, P, L, CLK, Slc0, Slc1, reset);
 	 .Pulso(FL), 
 	 .Inp(nFL), 
 	 .Clk(CLK), 
-	 .rst(rst));
+	 .rst(1'b0));
 	 
 	 wire FF, FT, FP, FL;
 	 wire InF, InT, InP, InL;
