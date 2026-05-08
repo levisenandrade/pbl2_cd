@@ -11,25 +11,18 @@ O módulo Main atua como a unidade central de processamento e controle do sistem
 
 Circuito combinacional que converte uma entrada binária de 2 bits em padrões de iluminação para um display de 7 segmentos. Ele mapeia quatro combinações binárias de entrada para padrões específicos de acendimento, permitindo a exibição de caracteres ou símbolos em um display.
 
-## Contador de 2 bits
-Contador binário assíncrono (ripple counter) de 2 bits. Implementado em Verilog utilizando Flip-Flops JK configurados em modo toggle, com a saída complementar do primeiro estágio servindo de clock para o segundo.
-
-* Não trava: Ele é um contador cíclico (00 → 01 → 10 → 11 → 00...).
-
-* Menos complexo: Não possui portas lógicas (AND/OR) intermediárias, apenas os elementos de memória (FFs).
-
-* Por ter 2 bits, ele possui 2^2 = 4 estados possíveis.
+## Contador síncrono de 2 bits 
+Utiliza Flip-Flops JK com lógica combinacional de realimentação para controlar as transições de estado de forma sincronizada ao sinal de clock.   
+* Lógica de Controle: Possui portas OR intermediárias que determinam as entradas J e K do segundo estágio, baseando-se nos estados atuais de saída.   
+* Seletor de Varredura: Atua como o gerador de endereços para a multiplexação dos sensores, permitindo a alternância cíclica de exibição.   
+* Sincronismo Total: As transições de todos os bits ocorrem simultaneamente, garantindo maior estabilidade temporal para o sistema de monitoramento.   Módulo 4: Por ter 2 bits, ele percorre $2^2 = 4$ estados possíveis antes de reiniciar o ciclo. 
   
-## Contador de 5 bits
-Contador assíncrono (ripple counter) de 5 bits implementado utilizando Flip-Flops JK. O módulo possui uma lógica de travamento (lock) baseada em uma porta OR que condiciona o sinal de entrada.
-
-* Contagem: Ele utiliza 5 Flip-Flops JK em modo "toggle" (J=1, K=1) para contar de 0 a 31.
-
-* Cascata (Ripple): O clock de cada estágio vem da saída barrada (qn) do estágio anterior, caracterizando um contador assíncrono.
-
-* Lógica de Controle: A porta AND na entrada combina o sinal de pulso externo (Inp) com o sinal Trava.
-
-* A "Trava": A porta OR monitora bits específicos. Se qualquer uma das condições (qn[0], qn[2], qn[4], q[1], q[3]) for verdadeira (nível alto), o contador continua operando. Se todas forem falsas, a saída Trava vai para 0 e bloqueia novos pulsos de clock.
+## Contador síncrono de 5 bits
+Contador binário síncrono de 5 bits projetado para registrar o histórico de ativações dos sensores (0 a 31). Utiliza lógica de transporte antecipado para garantir estabilidade nas transições de estado.  
+* Sincronismo: Todos os estágios compartilham o mesmo clock de entrada (Inp), eliminando atrasos de propagação acumulados.  
+* Lógica de Carry: Emprega portas AND para controlar o incremento dos bits superiores apenas quando os anteriores atingem nível alto.
+* Controle de Reset: Possui entrada rst para zerar a contagem imediatamente, atendendo aos requisitos de segurança do sistema.  
+* Capacidade: Módulo 32 ($2^5$), permitindo o monitoramento completo até o limite crítico de 20 eventos definido pelo projeto. 
 
 ## Conversor
 Circuito combinacional projetado para converter um valor binário de 5 bits (0 a 31) em sua representação decimal codificada em binário (BCD), separando o valor em Dezenas e Unidades.
