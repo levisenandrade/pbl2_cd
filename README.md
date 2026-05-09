@@ -43,5 +43,8 @@ Implementação comportamental de um Flip-Flop JK sensível à borda de subida (
 
 ## Codificador do sistema de travamento
 
+Esse módulo recebe as travas individuais de cada contador e os transformam em um código binário predefinido para cada letra, por exemplo:
+Temos o código 1000, sendo FTPL. O módulo recebe, identifica o código e o transforma em 00, que significa F. Isso para cada sensor, sendo 0100 -> 01 -> T. 
+
 Acesso às releases:
 https://github.com/levisenandrade/pbl2_cd/releases/
