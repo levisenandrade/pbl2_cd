@@ -11,6 +11,11 @@ O módulo Main atua como a unidade central de processamento e controle do sistem
 
 Circuito combinacional que converte uma entrada binária de 2 bits em padrões de iluminação para um display de 7 segmentos. Ele mapeia quatro combinações binárias de entrada para padrões específicos de acendimento, permitindo a exibição de caracteres ou símbolos em um display.
 
+## Codificador do sistema de travamento
+
+Esse módulo recebe as travas individuais de cada contador e os transformam em um código binário predefinido para cada letra, por exemplo:
+Temos o código 1000, sendo FTPL. O módulo recebe, identifica o código e o transforma em 00, que significa F. Isso para cada sensor, sendo 0100 -> 01 -> T. 
+
 ## Contador síncrono de 2 bits 
 Utiliza Flip-Flops JK com lógica combinacional de realimentação para controlar as transições de estado de forma sincronizada ao sinal de clock.   
 * Lógica de Controle: Possui portas OR intermediárias que determinam as entradas J e K do segundo estágio, baseando-se nos estados atuais de saída.   
@@ -40,11 +45,6 @@ Divisor de frequência de 27 estágios; utiliza uma cadeia de Flip-Flops JK em m
 
 ## Flipflop JK
 Implementação comportamental de um Flip-Flop JK sensível à borda de subida (posedge) com reset assíncrono. Inclui suporte aos modos de operação Hold, Reset, Set e Toggle, além de fornecer saídas complementares (Q e Qˉ​).
-
-## Codificador do sistema de travamento
-
-Esse módulo recebe as travas individuais de cada contador e os transformam em um código binário predefinido para cada letra, por exemplo:
-Temos o código 1000, sendo FTPL. O módulo recebe, identifica o código e o transforma em 00, que significa F. Isso para cada sensor, sendo 0100 -> 01 -> T. 
 
 Acesso às releases:
 https://github.com/levisenandrade/pbl2_cd/releases/
